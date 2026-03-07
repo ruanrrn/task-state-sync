@@ -10,6 +10,20 @@ Agents are often decent at doing work and embarrassingly bad at maintaining the 
 
 It teaches an agent when to write durable task state, what belongs in `TODO.md` versus `memory/active-task.md`, and how to keep those files aligned as priorities, blockers, and next steps change during real multitask execution.
 
+## Works independently
+
+`task-state-sync` is deliberately narrow but still fully useful on its own.
+
+Use it when your main problem is state drift rather than scheduling. Even without any companion skill, it already gives you a disciplined way to:
+
+- keep `TODO.md` accurate
+- keep `memory/active-task.md` accurate
+- preserve important IDs for later recovery
+- clean out stale finished work
+- reduce restart confusion
+
+It does not require `task-orchestrator` or `multi-task-continuity` to be useful. Those repos simply pair well with it.
+
 ## What the skill teaches
 
 The skill tells the agent to:
@@ -34,12 +48,13 @@ Use `task-state-sync` when:
 
 ## Relationship to other skills
 
-This skill is deliberately narrow:
+This skill stays intentionally scoped:
 
+- `task-state-sync` keeps continuity files honest during work
 - `task-orchestrator` decides ordering, parallelism, and reporting
-- `todo-continuity` defines the per-chat task-board shape
-- `restart-continuity` defines the restart recovery scratchpad
-- `task-state-sync` keeps those files accurate while the work is in flight
+- `multi-task-continuity` bundles the full workflow into one umbrella skill
+
+If state drift is the main pain, this repo alone is enough.
 
 ## Example behavior
 
@@ -74,6 +89,13 @@ A good agent should:
 1. remove the finished item from `TODO.md`
 2. rewrite the remaining queue if other work is still active
 3. clear `memory/active-task.md` if no top task remains
+
+## Related skills
+
+These are related, not required:
+
+- `task-orchestrator`: adds scheduling, prioritization, and staged progress policy — <https://github.com/ruanrrn/task-orchestrator>
+- `multi-task-continuity`: bundles scheduling plus state sync plus restart-safe recovery — <https://github.com/ruanrrn/multi-task-continuity>
 
 ## What you get
 
