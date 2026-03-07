@@ -5,6 +5,8 @@
 ![OpenClaw Skill](https://img.shields.io/badge/OpenClaw-Skill-1D3557?style=flat-square)
 ![Focus-State Sync](https://img.shields.io/badge/Focus-State%20Sync-A8DADC?style=flat-square&labelColor=1D3557)
 ![Works-Standalone](https://img.shields.io/badge/Works-Standalone-F1FAEE?style=flat-square&labelColor=457B9D)
+![Artifact-.skill Included](https://img.shields.io/badge/Artifact-.skill%20Included-D7EFEF?style=flat-square&labelColor=457B9D)
+![License-MIT](https://img.shields.io/badge/License-MIT-F1FAEE?style=flat-square&labelColor=1D3557)
 
 An OpenClaw skill for keeping multitask continuity files accurate while work is still moving.
 
@@ -115,6 +117,11 @@ Suggested social preview asset: `assets/social-preview.svg`
 Suggested one-line copy:
 
 > Keep TODO.md and memory/active-task.md aligned while real work is moving.
+
+GitHub note:
+
+- The current `gh` CLI and GraphQL `UpdateRepositoryInput` do not expose a writable custom social preview field.
+- To use this image as the repository social preview, upload `assets/social-preview.svg` manually in the repo settings UI.
 
 ## What you get
 
