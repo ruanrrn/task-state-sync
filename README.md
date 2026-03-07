@@ -37,6 +37,13 @@ Use it when your main problem is state drift rather than scheduling. Even withou
 
 It does not require `task-orchestrator` or `multi-task-continuity` to be useful. Those repos simply pair well with it.
 
+## Family role
+
+Within this repo family, `task-state-sync` is the continuity-file maintenance specialist.
+
+Use it when the main problem is stale state, missing IDs, or drift between `TODO.md` and `memory/active-task.md`.
+Do not bloat it into a scheduler just because the bug happened during multitask work.
+
 ## What the skill teaches
 
 The skill tells the agent to:
@@ -152,6 +159,12 @@ task-state-sync/
 ## Contributing
 
 See `CONTRIBUTING.md` for contribution scope, PR expectations, and how to keep this repo focused on state accuracy rather than broad orchestration policy.
+
+## Release hygiene
+
+- Regenerate `dist/task-state-sync.skill` after each material skill change
+- Keep the repository focused on state-sync behavior, not broad orchestration policy
+- Keep README examples aligned with the actual sync rules in `task-state-sync/SKILL.md`
 
 ## Repository
 
