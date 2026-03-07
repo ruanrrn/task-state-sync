@@ -149,6 +149,10 @@ task-state-sync/
     └── task-state-sync.skill
 ```
 
+## Contributing
+
+See `CONTRIBUTING.md` for contribution scope, PR expectations, and how to keep this repo focused on state accuracy rather than broad orchestration policy.
+
 ## Repository
 
 - GitHub: `https://github.com/ruanrrn/task-state-sync`
