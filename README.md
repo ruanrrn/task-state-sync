@@ -1,6 +1,17 @@
 # Task State Sync
 
+![Task State Sync banner](assets/social-preview.svg)
+
+![OpenClaw Skill](https://img.shields.io/badge/OpenClaw-Skill-1D3557?style=flat-square)
+![Focus-State Sync](https://img.shields.io/badge/Focus-State%20Sync-A8DADC?style=flat-square&labelColor=1D3557)
+![Works-Standalone](https://img.shields.io/badge/Works-Standalone-F1FAEE?style=flat-square&labelColor=457B9D)
+
 An OpenClaw skill for keeping multitask continuity files accurate while work is still moving.
+
+## Quick pitch
+
+Keep `TODO.md` and `memory/active-task.md` aligned while real work is moving.
+State drift is not a personality trait. Fix it before the restart does it for you.
 
 ## Why this exists
 
@@ -97,6 +108,14 @@ These are related, not required:
 - `task-orchestrator`: adds scheduling, prioritization, and staged progress policy — <https://github.com/ruanrrn/task-orchestrator>
 - `multi-task-continuity`: bundles scheduling plus state sync plus restart-safe recovery — <https://github.com/ruanrrn/multi-task-continuity>
 
+## Social preview
+
+Suggested social preview asset: `assets/social-preview.svg`
+
+Suggested one-line copy:
+
+> Keep TODO.md and memory/active-task.md aligned while real work is moving.
+
 ## What you get
 
 - `task-state-sync/` - the skill source
@@ -115,6 +134,8 @@ Use either path:
 task-state-sync/
 ├── LICENSE
 ├── README.md
+├── assets/
+│   └── social-preview.svg
 ├── task-state-sync/
 │   └── SKILL.md
 └── dist/

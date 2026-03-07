@@ -1,0 +1,14 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="640" fill="#F7F3EC"/>
+  <rect x="48" y="48" width="1184" height="544" rx="28" fill="#1D3557"/>
+  <rect x="84" y="84" width="230" height="40" rx="20" fill="#A8DADC"/>
+  <text x="106" y="110" fill="#1D3557" font-family="Georgia, serif" font-size="24" font-weight="700">OpenClaw Skill</text>
+  <text x="84" y="230" fill="#F1FAEE" font-family="Georgia, serif" font-size="78" font-weight="700">Task State Sync</text>
+  <text x="84" y="300" fill="#A8DADC" font-family="Arial, sans-serif" font-size="30">Keep TODO.md and memory/active-task.md aligned while real work is moving.</text>
+  <text x="84" y="360" fill="#D7EFEF" font-family="Arial, sans-serif" font-size="26">State drift is not a personality trait. Fix it before the restart does it for you.</text>
+  <rect x="860" y="160" width="280" height="72" rx="16" fill="#457B9D"/>
+  <rect x="900" y="268" width="220" height="56" rx="14" fill="#A8DADC"/>
+  <rect x="830" y="358" width="320" height="72" rx="16" fill="#E63946"/>
+  <path d="M820 196H756V394H820" stroke="#F1FAEE" stroke-width="12" stroke-linecap="round"/>
+  <path d="M1170 196H1234V394H1170" stroke="#F1FAEE" stroke-width="12" stroke-linecap="round"/>
+</svg>
