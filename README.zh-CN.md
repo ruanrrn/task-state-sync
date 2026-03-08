@@ -11,131 +11,145 @@
 ![README-Bilingual](https://img.shields.io/badge/README-Bilingual-F6F4EE?style=flat-square&labelColor=B45F3C)
 ![License-MIT](https://img.shields.io/badge/License-MIT-F6F4EE?style=flat-square&labelColor=18324A)
 
-一个在多任务执行过程中维持连续性状态文件准确性的 OpenClaw 技能。
+一个用于在多任务执行过程中持续保持 `TODO.md` 与 `memory/active-task.md` 准确性的 OpenClaw skill。
 
-## Quick pitch
+## Overview
 
-让 `TODO.md` 和 `memory/active-task.md` 在真实工作推进时保持同步。
-状态漂移不是什么人格魅力，别等重启替你收尸。
+`task-state-sync` 是一个专门维护连续性状态文件的窄职责 skill，不是通用编排框架。
+
+它负责在优先级变化、阻塞出现、后台运行启动、任务完成等真实执行过程中，让两份关键连续性文件始终和现实对齐：
+
+- `TODO.md`：按聊天维度维护的持久未完成队列
+- `memory/active-task.md`：唯一的“恢复时优先继续”的 scratchpad
+
+这个 skill 故意做得很小。它不负责决定调度策略，不接管大范围工作流策略，也不替代更高层的协同技能。它存在的意义很直接：别让状态漂移把一次普通中断升级成事故复盘。
 
 ## Why this exists
 
-代理做事往往还行，但维护“之后还能接着做”的状态信息时，常常菜得很稳定。结果也很熟悉：`TODO.md` 过期，`memory/active-task.md` 还指着昨天的问题，已经完成的任务像鬼一样挂在队列里，系统一重启，现场直接变考古。
+很多代理会做事，但不太会在做事的同时维护“之后还能接着做”的状态。常见翻车姿势稳定得像 CI：
 
-`task-state-sync` 就是拿来阻止这种慢性失忆的。
+- `TODO.md` 落后于真实任务队列
+- `memory/active-task.md` 指向错误的最高优先级任务
+- 重要 ID 第一次出现时没有及时记住
+- 已完成的工作还挂在活动列表里装死
+- 一次重启就把活跃任务变成现场重建
 
-它教代理在什么时候写持久化状态，什么内容该进 `TODO.md`，什么内容该进 `memory/active-task.md`，以及在优先级、阻塞、下一步动作变化时，如何把这两份文件继续对齐。
+`task-state-sync` 的目标，就是把连续性文件维护从“也许记得做”变成明确流程。
 
-## Works independently
+## Scope
 
-`task-state-sync` 刻意保持窄职责，但单独使用也完全成立。
+当问题核心是“执行中的任务状态准确性”时，就该用这个仓库。
 
-如果你的主要问题是状态漂移，而不是调度策略，那它本身就够用了。即使没有任何配套技能，它也能帮你稳定做到：
+适合这些场景：
 
-- 让 `TODO.md` 保持准确
-- 让 `memory/active-task.md` 保持准确
-- 保存后续恢复需要的重要 ID
-- 清掉陈旧或已完成的任务
-- 降低重启后的混乱程度
+- 工作跨越多条消息，活跃队列会变化
+- 执行过程中优先级或阻塞发生了实质变化
+- 需要保存后续恢复一定会用到的重要 ID
+- 如果不先写好连续性文件，重启或 session reset 会很痛
+- `TODO.md` 与 `memory/active-task.md` 有明显漂移风险
 
-它不依赖 `task-orchestrator` 或 `multi-task-continuity` 才能发挥价值；那些仓库只是搭配起来更顺手。
+不适合这些场景：
 
-## Family role
+- 决定调度策略
+- 提供通用任务优先级框架
+- 单独负责重启自动恢复系统
+- 承担整套多任务 operating model
 
-在这组仓库里，`task-state-sync` 的角色是“连续性文件维护专员”。
+如果主要问题是编排，去用配套仓库；如果主要问题是状态文件过期，这里才是正门。
 
-当真正的问题是状态陈旧、关键 ID 丢失，或者 `TODO.md` 与 `memory/active-task.md` 漂移时，就该用它。
-别因为 bug 发生在多任务场景里，就把它硬塞成调度器。
+## What the skill covers
 
-## What the skill teaches
+`task-state-sync` 教代理在真正关键的时刻维护连续性文件：
 
-这个技能会要求代理：
+- 只在状态发生实质变化时同步，而不是每个小动作都重写
+- 把按聊天维度的队列写进 `TODO.md`
+- 把唯一需要优先恢复的任务写进 `memory/active-task.md`
+- 在重要 ID 第一次出现时立即记录
+- 区分“被阻塞”与“只是等待中”
+- 删除已完成或陈旧条目，而不是把假信息继续留在现场
+- 在 reset 或计划重启前，提前写好可恢复状态
 
-- 在状态发生实质变化时同步连续性文件，而不是每走一步就重写
-- 把 `TODO.md` 作为按聊天维度维护的未完成任务队列
-- 把 `memory/active-task.md` 作为唯一的优先恢复 scratchpad
-- 在重要 ID 第一次出现时就记下来
-- 删除陈旧或已完成的项目，而不是把历史垃圾继续堆在活动状态文件里
-- 在重置或计划重启前，提前写好可恢复状态
+这个仓库刻意保持边界清晰：它标准化的是连续性文件维护，不是整个多任务系统。
+
+## Workflow summary
+
+一次典型的 `task-state-sync` 执行应该长这样：
+
+1. 先重建真实状态：当前有哪些活跃任务、谁是最高优先级、哪些是阻塞、下一步是什么、哪些 ID 之后会用到。
+2. 更新 `TODO.md`，让当前聊天的未完成队列反映真实情况。
+3. 如果存在明确的最高优先级任务，就更新 `memory/active-task.md`。
+4. 清掉陈旧或已完成项目，并确保两份文件里的重要 ID 不互相打架。
+5. 再检查一次：下一步动作、阻塞状态、恢复提示语是否还和现实一致。
+
+这听起来像卫生工作，但决定恢复能不能成功的，往往就是这点卫生工作。
 
 ## When to use it
 
-以下场景适合用 `task-state-sync`：
+当你需要让连续性文件在执行过程中仍然可信时，就用 `task-state-sync`。
 
-- 代理同时处理多个跨消息任务
-- 工作需要跨重启或跨 session 保持连续
-- 执行过程中最高优先级发生变化
-- 出现或解除阻塞
-- 需要保存后续恢复会用到的重要 ID
-- `TODO.md` 和 `memory/active-task.md` 有漂移风险
+典型触发点包括：
 
-## Example behavior
+- 新任务插队并抢走最高优先级
+- 某个 blocker 出现或解除
+- 一个后台运行启动并返回值得保存的 ID
+- 一个长任务需要干净的重启恢复信息
+- 下一步具体动作已经变化
+- 一个已完成任务应该从活动队列里消失
 
-### Example 1: 出现新的 blocker
+## Representative outcomes
+
+### 阻塞信息落盘
 
 一个后台运行失败了，并返回 session ID 和日志路径。
 
-好的代理应该：
+靠谱的代理应该立刻更新 `TODO.md`，判断这个失败是否已经成为最高优先级任务；如果是，就把它提升进 `memory/active-task.md`，并立即保存后续恢复需要的 ID。
 
-1. 在 `TODO.md` 里写入 blocker 和下一步诊断动作
-2. 判断这个失败是否已经变成当前最高优先级任务
-3. 如果是，就重写 `memory/active-task.md`，把它升成恢复优先任务
-4. 把 session ID 和日志路径记到后续恢复一定找得到的位置
+### 优先级切换
 
-### Example 2: 紧急任务插队
+在其他工作仍在进行时，新的紧急请求插了进来。
 
-用户在其他工作还在进行时，又发来了一个线上紧急问题。
+靠谱的代理应该重写当前聊天的任务队列，让旧任务继续被跟踪但降级处理，同时重写 `memory/active-task.md`，把新任务变成恢复时优先继续的主线。
 
-好的代理应该：
+### 完成后清理
 
-1. 重写 `TODO.md` 里的当前聊天区块
-2. 把旧任务降级为次要工作，而不是直接删掉
-3. 把紧急问题提升到 `memory/active-task.md`
-4. 更新重启后的恢复提示语，让它反映真实情况
+一个之前处于活跃状态的任务成功完成。
 
-### Example 3: 任务完成
+靠谱的代理应该把它从 `TODO.md` 中移除，刷新剩余队列；如果已经没有明确的最高优先级任务，就清空 `memory/active-task.md`。
 
-一个原本活跃的发布流程成功结束。
+## Related skill repos
 
-好的代理应该：
-
-1. 从 `TODO.md` 中移除已完成项
-2. 如果还有其他任务，重写剩余队列
-3. 如果已经没有最高优先级任务，就清空 `memory/active-task.md`
-
-## Related skills
-
-这些是相关技能，不是依赖项：
+这些仓库是相关示例，不是必需依赖：
 
 - `task-orchestrator`：负责调度、优先级和分阶段进度策略 - <https://github.com/ruanrrn/task-orchestrator>
-- `multi-task-continuity`：把调度、状态同步和重启恢复打包成完整工作流 - <https://github.com/ruanrrn/multi-task-continuity>
+- `multi-task-continuity`：更完整的工作模型，组合了编排、状态同步和可恢复连续性 - <https://github.com/ruanrrn/multi-task-continuity>
 
-如果你的核心痛点就是状态漂移，这个仓库单独用就够了。
+当失败模式是状态陈旧时，从这里开始；如果你还需要外围的工作流策略，再去用更大的仓库。
+
+## Install
+
+两种方式都可以：
+
+1. 将 `dist/task-state-sync.skill` 导入 OpenClaw 环境。
+2. 如果你需要可编辑源码，就把 `task-state-sync/` 复制到你的 skills 目录。
+
+## What this repo contains
+
+- `task-state-sync/` - skill 源码
+- `dist/task-state-sync.skill` - 可直接导入的打包产物
+- `assets/social-preview.svg` - 仓库 banner 与建议使用的 social-preview 资源
 
 ## Social preview
 
-建议的社交预览图：`assets/social-preview.svg`
+建议使用的 social preview 资源：`assets/social-preview.svg`
 
-建议的一行文案：
+建议的一句话文案：
 
-> 让 `TODO.md` 和 `memory/active-task.md` 在真实工作推进时保持同步。
+> Keep `TODO.md` and `memory/active-task.md` accurate while multitask work is still in flight.
 
 GitHub 说明：
 
 - 当前 `gh` CLI 和 GraphQL `UpdateRepositoryInput` 都不支持写入自定义 social preview。
-- 如果要把这张图设为仓库社交预览图，需要手动在仓库设置页面上传 `assets/social-preview.svg`。
-
-## What you get
-
-- `task-state-sync/` - 技能源码
-- `dist/task-state-sync.skill` - 可直接导入的打包产物
-
-## Install
-
-可任选一种方式：
-
-1. 将 `dist/task-state-sync.skill` 导入 OpenClaw 环境。
-2. 如果你需要可编辑源码，就把 `task-state-sync/` 复制到你的 skills 目录。
+- 如果要把这张图真正设成仓库 social preview，需要在仓库设置页面手动上传 `assets/social-preview.svg`。
 
 ## Repository layout
 
@@ -155,14 +169,14 @@ task-state-sync/
 
 ## Contributing
 
-详见 `CONTRIBUTING.md`，里面写了贡献范围、PR 期望，以及如何避免把这个仓库做成一坨泛化编排理论。
+详见 `CONTRIBUTING.md`。里面写明了贡献范围、PR 预期，以及如何保持这个仓库继续聚焦连续性文件维护，而不是一路长歪成泛化编排策略。
 
 ## Release hygiene
 
-- 只要技能本体有实质变更，就重新生成 `dist/task-state-sync.skill`
-- 仓库应保持聚焦在状态同步，而不是扩展成泛化编排策略
-- README 里的示例必须和 `task-state-sync/SKILL.md` 的真实规则保持一致
-- 对外展示要干净、双语、且单仓库即可自解释
+- 只要 skill 本体发生实质变更，就重新生成 `dist/task-state-sync.skill`
+- 保持 `README.md`、`README.zh-CN.md` 与 `task-state-sync/SKILL.md` 一致
+- 持续保持这个仓库在技能家族中的窄职责定位：状态同步专员，不是总包
+- 示例要保持操作性和诚实，不要把仓库描述得比实际更宽
 
 ## Repository
 

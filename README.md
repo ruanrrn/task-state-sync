@@ -11,124 +11,119 @@ English | [简体中文](README.zh-CN.md)
 ![README-Bilingual](https://img.shields.io/badge/README-Bilingual-F6F4EE?style=flat-square&labelColor=B45F3C)
 ![License-MIT](https://img.shields.io/badge/License-MIT-F6F4EE?style=flat-square&labelColor=18324A)
 
-An OpenClaw skill for keeping multitask continuity files accurate while work is still moving.
+An OpenClaw skill for keeping `TODO.md` and `memory/active-task.md` accurate while multitask work is still in flight.
 
-## Quick pitch
+## Overview
 
-Keep `TODO.md` and `memory/active-task.md` aligned while real work is moving.
-State drift is not a personality trait. Fix it before the restart does it for you.
+`task-state-sync` is a narrow continuity-maintenance skill for active work, not a general orchestration framework.
+
+Its job is to keep the two operational continuity files aligned with reality while priorities shift, blockers appear, background runs start, and tasks complete:
+
+- `TODO.md` as the durable per-chat unfinished queue
+- `memory/active-task.md` as the single resume-first scratchpad
+
+The skill is deliberately small. It does not choose scheduling strategy, manage broad workflow policy, or replace higher-level coordination skills. It exists to stop state drift before a restart, reset, or interruption turns active work into guesswork.
 
 ## Why this exists
 
-Agents are often decent at doing work and embarrassingly bad at maintaining the state needed to resume that work later. The result is familiar: `TODO.md` drifts out of date, `memory/active-task.md` points at yesterday's problem, finished tasks keep haunting the queue, and restarts turn active work into archaeology.
+Many agents can keep moving, but far fewer keep durable task state accurate while they move. The common failure pattern is boring and expensive:
 
-`task-state-sync` exists to stop that slow-motion memory corruption.
+- `TODO.md` falls behind the real queue
+- `memory/active-task.md` points at the wrong top task
+- important IDs are lost when they are first introduced
+- finished work remains listed as active
+- restarts convert a live task into reconstruction work
 
-It teaches an agent when to write durable task state, what belongs in `TODO.md` versus `memory/active-task.md`, and how to keep those files aligned as priorities, blockers, and next steps change during real multitask execution.
+`task-state-sync` exists to make continuity-file maintenance explicit instead of accidental.
 
-## Works independently
+## Scope
 
-`task-state-sync` is deliberately narrow but fully useful on its own.
+Use this repo when the problem is task-state accuracy during execution.
 
-Use it when your main problem is state drift rather than scheduling. Even without any companion skill, it already gives you a disciplined way to:
+Good fit:
 
-- keep `TODO.md` accurate
-- keep `memory/active-task.md` accurate
-- preserve important IDs for later recovery
-- clean out stale finished work
-- reduce restart confusion
+- work spans multiple messages and the active queue changes
+- priorities or blockers changed materially during execution
+- important IDs need to be preserved for later recovery
+- a restart or session reset would be painful without updated continuity files
+- `TODO.md` and `memory/active-task.md` risk drifting apart
 
-It does not require `task-orchestrator` or `multi-task-continuity` to be useful. Those repos simply pair well with it.
+Not a fit:
 
-## Family role
+- deciding scheduling policy
+- general task prioritization frameworks
+- restart automation by itself
+- a broad multitask operating model
 
-Within this repo family, `task-state-sync` is the continuity-file maintenance specialist.
+If the main problem is orchestration, use a companion repo. If the main problem is stale continuity files, start here.
 
-Use it when the main problem is stale state, missing IDs, or drift between `TODO.md` and `memory/active-task.md`.
-Do not bloat it into a scheduler just because the bug happened during multitask work.
+## What the skill covers
 
-## What the skill teaches
+`task-state-sync` teaches an agent to keep continuity files current at the moments that actually matter:
 
-The skill tells the agent to:
-
-- sync continuity files on material state changes, not after every tiny step
-- use `TODO.md` as the per-chat unfinished queue
-- use `memory/active-task.md` as the single resume-first scratchpad
+- sync on material state changes instead of every tiny step
+- write the per-chat queue to `TODO.md`
+- write the single resume-first task to `memory/active-task.md`
 - record important IDs when they first appear
-- remove stale or completed work instead of preserving historical nonsense in live state files
-- prepare restart-safe state before resets and intentional restarts
+- distinguish blocked work from merely waiting work
+- remove completed or stale items instead of preserving fiction
+- prepare restart-safe state before resets or planned restarts
+
+The repo stays intentionally narrow: it standardizes continuity-file upkeep, not the rest of the multitask system.
+
+## Workflow summary
+
+A typical `task-state-sync` pass looks like this:
+
+1. Rebuild the true current state: active tasks, top priority, blockers, next action, and important IDs.
+2. Update `TODO.md` so the current chat's unfinished queue reflects reality.
+3. Update `memory/active-task.md` if one task clearly needs to resume first.
+4. Remove stale finished work and keep recorded IDs consistent across both files.
+5. Re-check that the next step, blocker state, and resume sentence still match the actual situation.
+
+This is operational hygiene, but it is operational hygiene that determines whether recovery works.
 
 ## When to use it
 
-Use `task-state-sync` when:
+Use `task-state-sync` when you need continuity files to stay trustworthy during live execution.
 
-- an agent is juggling multiple tasks across messages
-- work should survive restarts or session resets
-- the top priority changed during execution
+Typical triggers:
+
+- a new task preempts the current top priority
 - a blocker appears or clears
-- important IDs need to be preserved for later recovery
-- `TODO.md` and `memory/active-task.md` risk drifting apart
+- a background run starts and returns IDs worth preserving
+- a long-running task will need clean restart recovery
+- the next concrete action changed
+- a finished task should disappear from the active queue
 
-## Example behavior
+## Representative outcomes
 
-### Example 1: new blocker appears
+### Blocker capture
 
-A background run fails and returns a session ID and log path.
+A background run fails and returns a session ID plus a log path.
 
-A good agent should:
+A good agent should update `TODO.md`, decide whether that failure is now the top task, promote it into `memory/active-task.md` if needed, and preserve the recovery IDs immediately.
 
-1. update `TODO.md` with the blocker and the next diagnostic step
-2. decide whether that failure is now the top task
-3. if yes, rewrite `memory/active-task.md` to make it the resume-first lane
-4. record the session ID and log path where future recovery will need them
+### Priority shift
 
-### Example 2: urgent task preempts the queue
+A new urgent request arrives while other work is still in progress.
 
-A user sends a new production issue while other work is running.
+A good agent should rewrite the per-chat queue so the old task remains tracked but demoted, then rewrite `memory/active-task.md` so the new task becomes the resume-first lane.
 
-A good agent should:
+### Completion cleanup
 
-1. rewrite the current chat section in `TODO.md`
-2. demote the old task to secondary work instead of deleting it
-3. promote the urgent issue to `memory/active-task.md`
-4. update the post-restart resume sentence to match reality
+A previously active task finishes successfully.
 
-### Example 3: task completion
+A good agent should remove it from `TODO.md`, refresh the remaining queue, and clear `memory/active-task.md` if no top task remains.
 
-A previously active publish flow succeeds.
+## Related skill repos
 
-A good agent should:
+These repositories are related examples, not required dependencies:
 
-1. remove the finished item from `TODO.md`
-2. rewrite the remaining queue if other work is still active
-3. clear `memory/active-task.md` if no top task remains
+- `task-orchestrator`: scheduling, prioritization, and staged progress policy - <https://github.com/ruanrrn/task-orchestrator>
+- `multi-task-continuity`: broader operating model that combines orchestration, state sync, and restart-safe continuity - <https://github.com/ruanrrn/multi-task-continuity>
 
-## Related skills
-
-These are related, not required:
-
-- `task-orchestrator`: adds scheduling, prioritization, and staged progress policy - <https://github.com/ruanrrn/task-orchestrator>
-- `multi-task-continuity`: bundles scheduling plus state sync plus restart-safe recovery - <https://github.com/ruanrrn/multi-task-continuity>
-
-Use this repo alone if state drift is the main pain.
-
-## Social preview
-
-Suggested social preview asset: `assets/social-preview.svg`
-
-Suggested one-line copy:
-
-> Keep `TODO.md` and `memory/active-task.md` aligned while real work is moving.
-
-GitHub note:
-
-- The current `gh` CLI and GraphQL `UpdateRepositoryInput` do not expose a writable custom social preview field.
-- To use this image as the repository social preview, upload `assets/social-preview.svg` manually in the repo settings UI.
-
-## What you get
-
-- `task-state-sync/` - the skill source
-- `dist/task-state-sync.skill` - packaged artifact ready to import
+Start here when the failure mode is stale state. Use the broader repos when you want the surrounding workflow policy as well.
 
 ## Install
 
@@ -136,6 +131,25 @@ Use either path:
 
 1. Import `dist/task-state-sync.skill` into an OpenClaw environment.
 2. Copy `task-state-sync/` into your skills directory if you want the editable source.
+
+## What this repo contains
+
+- `task-state-sync/` - the skill source
+- `dist/task-state-sync.skill` - the packaged artifact ready to import
+- `assets/social-preview.svg` - the repository banner and suggested social-preview asset
+
+## Social preview
+
+Suggested social preview asset: `assets/social-preview.svg`
+
+Suggested one-line copy:
+
+> Keep `TODO.md` and `memory/active-task.md` accurate while multitask work is still in flight.
+
+GitHub note:
+
+- The current `gh` CLI and GraphQL `UpdateRepositoryInput` do not expose a writable custom social preview field.
+- To use this image as the repository social preview, upload `assets/social-preview.svg` manually in the repo settings UI.
 
 ## Repository layout
 
@@ -155,14 +169,14 @@ task-state-sync/
 
 ## Contributing
 
-See `CONTRIBUTING.md` for contribution scope, PR expectations, and how to keep this repo focused on state accuracy rather than broad orchestration policy.
+See `CONTRIBUTING.md` for contribution scope, PR expectations, and the boundary that keeps this repo focused on continuity-file maintenance instead of broad orchestration policy.
 
 ## Release hygiene
 
-- Regenerate `dist/task-state-sync.skill` after each material skill change
-- Keep the repository focused on state-sync behavior, not broad orchestration policy
-- Keep README examples aligned with the actual sync rules in `task-state-sync/SKILL.md`
-- Keep the public presentation clean, bilingual, and independently understandable
+- regenerate `dist/task-state-sync.skill` after each material skill change
+- keep `README.md`, `README.zh-CN.md`, and `task-state-sync/SKILL.md` aligned
+- preserve the repo's narrow role as the state-sync specialist of the family
+- keep examples operational and honest rather than widening the repo's claims
 
 ## Repository
 
