@@ -1,12 +1,15 @@
 # Task State Sync
 
+English | [简体中文](README.zh-CN.md)
+
 ![Task State Sync banner](assets/social-preview.svg)
 
-![OpenClaw Skill](https://img.shields.io/badge/OpenClaw-Skill-1D3557?style=flat-square)
-![Focus-State Sync](https://img.shields.io/badge/Focus-State%20Sync-A8DADC?style=flat-square&labelColor=1D3557)
-![Works-Standalone](https://img.shields.io/badge/Works-Standalone-F1FAEE?style=flat-square&labelColor=457B9D)
-![Artifact-.skill Included](https://img.shields.io/badge/Artifact-.skill%20Included-D7EFEF?style=flat-square&labelColor=457B9D)
-![License-MIT](https://img.shields.io/badge/License-MIT-F1FAEE?style=flat-square&labelColor=1D3557)
+![OpenClaw Skill](https://img.shields.io/badge/OpenClaw-Skill-18324A?style=flat-square)
+![Focus-State Sync](https://img.shields.io/badge/Focus-State%20Sync-8FD3C8?style=flat-square&labelColor=18324A)
+![Works-Standalone](https://img.shields.io/badge/Works-Standalone-F6F4EE?style=flat-square&labelColor=355C7D)
+![Artifact-.skill Included](https://img.shields.io/badge/Artifact-.skill%20Included-DCEFE9?style=flat-square&labelColor=355C7D)
+![README-Bilingual](https://img.shields.io/badge/README-Bilingual-F6F4EE?style=flat-square&labelColor=B45F3C)
+![License-MIT](https://img.shields.io/badge/License-MIT-F6F4EE?style=flat-square&labelColor=18324A)
 
 An OpenClaw skill for keeping multitask continuity files accurate while work is still moving.
 
@@ -25,7 +28,7 @@ It teaches an agent when to write durable task state, what belongs in `TODO.md` 
 
 ## Works independently
 
-`task-state-sync` is deliberately narrow but still fully useful on its own.
+`task-state-sync` is deliberately narrow but fully useful on its own.
 
 Use it when your main problem is state drift rather than scheduling. Even without any companion skill, it already gives you a disciplined way to:
 
@@ -66,16 +69,6 @@ Use `task-state-sync` when:
 - important IDs need to be preserved for later recovery
 - `TODO.md` and `memory/active-task.md` risk drifting apart
 
-## Relationship to other skills
-
-This skill stays intentionally scoped:
-
-- `task-state-sync` keeps continuity files honest during work
-- `task-orchestrator` decides ordering, parallelism, and reporting
-- `multi-task-continuity` bundles the full workflow into one umbrella skill
-
-If state drift is the main pain, this repo alone is enough.
-
 ## Example behavior
 
 ### Example 1: new blocker appears
@@ -114,8 +107,10 @@ A good agent should:
 
 These are related, not required:
 
-- `task-orchestrator`: adds scheduling, prioritization, and staged progress policy — <https://github.com/ruanrrn/task-orchestrator>
-- `multi-task-continuity`: bundles scheduling plus state sync plus restart-safe recovery — <https://github.com/ruanrrn/multi-task-continuity>
+- `task-orchestrator`: adds scheduling, prioritization, and staged progress policy - <https://github.com/ruanrrn/task-orchestrator>
+- `multi-task-continuity`: bundles scheduling plus state sync plus restart-safe recovery - <https://github.com/ruanrrn/multi-task-continuity>
+
+Use this repo alone if state drift is the main pain.
 
 ## Social preview
 
@@ -123,7 +118,7 @@ Suggested social preview asset: `assets/social-preview.svg`
 
 Suggested one-line copy:
 
-> Keep TODO.md and memory/active-task.md aligned while real work is moving.
+> Keep `TODO.md` and `memory/active-task.md` aligned while real work is moving.
 
 GitHub note:
 
@@ -148,6 +143,8 @@ Use either path:
 task-state-sync/
 ├── LICENSE
 ├── README.md
+├── README.zh-CN.md
+├── CONTRIBUTING.md
 ├── assets/
 │   └── social-preview.svg
 ├── task-state-sync/
@@ -165,6 +162,7 @@ See `CONTRIBUTING.md` for contribution scope, PR expectations, and how to keep t
 - Regenerate `dist/task-state-sync.skill` after each material skill change
 - Keep the repository focused on state-sync behavior, not broad orchestration policy
 - Keep README examples aligned with the actual sync rules in `task-state-sync/SKILL.md`
+- Keep the public presentation clean, bilingual, and independently understandable
 
 ## Repository
 

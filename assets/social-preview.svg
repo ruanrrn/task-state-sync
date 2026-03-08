@@ -1,14 +1,33 @@
 <svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="640" fill="#F7F3EC"/>
-  <rect x="48" y="48" width="1184" height="544" rx="28" fill="#1D3557"/>
-  <rect x="84" y="84" width="230" height="40" rx="20" fill="#A8DADC"/>
-  <text x="106" y="110" fill="#1D3557" font-family="Georgia, serif" font-size="24" font-weight="700">OpenClaw Skill</text>
-  <text x="84" y="230" fill="#F1FAEE" font-family="Georgia, serif" font-size="78" font-weight="700">Task State Sync</text>
-  <text x="84" y="300" fill="#A8DADC" font-family="Arial, sans-serif" font-size="30">Keep TODO.md and memory/active-task.md aligned while real work is moving.</text>
-  <text x="84" y="360" fill="#D7EFEF" font-family="Arial, sans-serif" font-size="26">State drift is not a personality trait. Fix it before the restart does it for you.</text>
-  <rect x="860" y="160" width="280" height="72" rx="16" fill="#457B9D"/>
-  <rect x="900" y="268" width="220" height="56" rx="14" fill="#A8DADC"/>
-  <rect x="830" y="358" width="320" height="72" rx="16" fill="#E63946"/>
-  <path d="M820 196H756V394H820" stroke="#F1FAEE" stroke-width="12" stroke-linecap="round"/>
-  <path d="M1170 196H1234V394H1170" stroke="#F1FAEE" stroke-width="12" stroke-linecap="round"/>
+  <rect width="1280" height="640" fill="#F6F2E9"/>
+  <rect x="48" y="48" width="1184" height="544" rx="30" fill="#18324A"/>
+  <rect x="88" y="84" width="230" height="40" rx="20" fill="#8FD3C8"/>
+  <text x="110" y="110" fill="#18324A" font-family="Georgia, serif" font-size="24" font-weight="700">OpenClaw Skill</text>
+
+  <text x="88" y="214" fill="#F6F4EE" font-family="Georgia, serif" font-size="78" font-weight="700">Task State</text>
+  <text x="88" y="292" fill="#8FD3C8" font-family="Georgia, serif" font-size="78" font-weight="700">Sync</text>
+  <text x="88" y="360" fill="#F6F4EE" font-family="Arial, sans-serif" font-size="31">Keep TODO.md and memory/active-task.md</text>
+  <text x="88" y="402" fill="#DCEFE9" font-family="Arial, sans-serif" font-size="31">aligned while real work is moving.</text>
+  <text x="88" y="462" fill="#E9E4D8" font-family="Arial, sans-serif" font-size="25">State drift is not a personality trait.</text>
+  <text x="88" y="498" fill="#CFC8BA" font-family="Arial, sans-serif" font-size="25">Fix it before the restart does it for you.</text>
+
+  <rect x="772" y="118" width="388" height="404" rx="34" fill="#234866"/>
+  <path d="M796 154C846 134 914 130 978 148C1044 166 1092 204 1122 252C1150 300 1152 360 1128 410C1102 460 1048 500 972 514" stroke="#8FD3C8" stroke-width="10" stroke-linecap="round" stroke-opacity="0.9"/>
+  <path d="M816 472C862 498 928 510 992 500C1054 490 1106 458 1140 414" stroke="#F0A36B" stroke-width="10" stroke-linecap="round" stroke-opacity="0.9"/>
+
+  <rect x="824" y="164" width="284" height="94" rx="20" fill="#F6F4EE"/>
+  <rect x="852" y="192" width="116" height="12" rx="6" fill="#18324A"/>
+  <rect x="852" y="216" width="198" height="10" rx="5" fill="#6D8294"/>
+  <rect x="1072" y="188" width="12" height="46" rx="6" fill="#8FD3C8"/>
+
+  <rect x="858" y="282" width="244" height="84" rx="18" fill="#8FD3C8" fill-opacity="0.18" stroke="#A8E4DA" stroke-width="4"/>
+  <rect x="886" y="310" width="102" height="12" rx="6" fill="#A8E4DA"/>
+  <rect x="886" y="334" width="152" height="10" rx="5" fill="#F6F4EE" fill-opacity="0.92"/>
+
+  <rect x="828" y="390" width="296" height="88" rx="22" fill="#F0A36B" fill-opacity="0.18" stroke="#F4BE93" stroke-width="4"/>
+  <rect x="856" y="420" width="126" height="12" rx="6" fill="#F4BE93"/>
+  <rect x="856" y="444" width="204" height="10" rx="5" fill="#F6F4EE" fill-opacity="0.92"/>
+
+  <circle cx="1122" cy="138" r="26" fill="#F0A36B" fill-opacity="0.24"/>
+  <circle cx="1150" cy="504" r="34" fill="#8FD3C8" fill-opacity="0.18"/>
 </svg>
